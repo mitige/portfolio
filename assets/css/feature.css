@@ -1,0 +1,98 @@
+/* ==========================================================================
+   feature.css — the laboratory, the spec strip, the closing statement, the
+   keyboard-accessible skip link, and the nav's scrolled state.
+   ========================================================================== */
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--c-blue);
+  color: #fff;
+  font-size: var(--fs-small);
+  transition: top 0.2s var(--ease-apple);
+}
+
+.skip-link:focus {
+  top: 12px;
+  text-decoration: none;
+}
+
+.globalnav.is-scrolled {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+/* ── the lab stage ───────────────────────────────────────────────────── */
+/* ── the control panel ───────────────────────────────────────────────── */
+/* ── the spec strip numbers already live in layout.css ───────────────── */
+
+/* ── closing statement ───────────────────────────────────────────────── */
+.closing {
+  padding: 150px 22px 160px;
+  background: var(--c-mist);
+}
+
+.closing__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.closing__sig {
+  margin-top: 54px;
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  color: var(--c-graphite);
+}
+
+.closing__line {
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+}
+
+.closing__body {
+  margin: 26px auto 0;
+  max-width: 560px;
+  font-size: var(--fs-callout);
+  line-height: 1.42;
+  letter-spacing: 0.002em;
+  color: var(--c-ink-72);
+}
+
+.closing__body a {
+  color: var(--c-link);
+  text-decoration: underline;
+}
+
+.closing__links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+/* ── no-WebGL: keep the scenes, drop the shader ──────────────────────── */
+.scene-static .tile__visual {
+  opacity: 0.9;
+}
+
+/* ── print ───────────────────────────────────────────────────────────── */
+@media print {
+  .globalnav,
+  .glass-overlay,
+  .nav-scrim,
+  .feature__lab,
+  .gallery {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}

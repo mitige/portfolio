@@ -1,0 +1,98 @@
+/* ==========================================================================
+   art.css — the illustration layer.
+   Each scene is a single ink drawing stretched under the glass. The drawing is
+   the subject; the floating panes are the material sitting on top of it. That
+   order matters: ink has hard edges, and hard edges are what make refraction
+   legible.
+   ========================================================================== */
+
+.art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/*
+ * The frame is locked to the svg's own aspect ratio and centred in the tile.
+ * This is what lets a pane at "42%, 30%" mean "42% across the drawing" at any
+ * tile size — so the glass always sits over the same focal ink.
+ */
+.art__frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1200 / 760;
+  max-width: none;
+}
+
+.art__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The panes. Real glass slabs — the WebGL overlay draws into these boxes. */
+/*
+ * The pane is only a *placeholder for geometry*. It must paint nothing at all:
+ * the WebGL layer draws both the glass body and its drop shadow, and the pane
+ * element sits above that layer, so any background or box-shadow here would be
+ * a flat rectangle stamped over the refraction. That was the "glitch": a hard
+ * milky box with a hard-edged shadow, visible on every drawing.
+ *
+ * With WebGL off, these rules are re-enabled further down as a plain fallback.
+ */
+.art-glass {
+  position: absolute;
+  display: block;
+  z-index: 3;
+  background: none;
+  box-shadow: none;
+}
+
+/* Each pane gets a slightly different thickness so a scene never reads as a
+   pattern: that variation is what makes it look observed rather than designed. */
+.art-glass.p1 { }
+.art-glass.p2 { }
+
+/* ── scene boxes ─────────────────────────────────────────────────────── */
+.scene-art {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+/* ── responsive: drawings crop, they never squash ────────────────────── */
+@media (max-width: 1068px) {
+  .art__frame { width: 128%; height: auto; }
+  .art-glass.p2 { display: none; }
+}
+
+@media (max-width: 767px) {
+  .art__frame { width: 168%; }
+  .art-glass.p2 { display: none; }
+  .art-glass.p1 { left: 30% !important; top: 30% !important; width: 40% !important; height: 34% !important; }
+}
+
+/* Ink is drawn for dark paper first; on light tiles the strokes come from the
+   pearl palette, so nothing else is needed here. */
+/* ── fallback: no WebGL, so the pane draws itself ─────────────────────── */
+.no-webgl .art-glass {
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+}
+
+.no-webgl .tile--light .art-glass {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 26px 60px rgba(20, 18, 12, 0.14);
+  border-color: rgba(0, 0, 0, 0.08);
+}
