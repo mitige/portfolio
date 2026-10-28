@@ -72,6 +72,7 @@
   uniform float rimTint;
   uniform float ringW;
   uniform float flatInner;
+  uniform float rimOnly;   // 1 = glass is just the refracting edge; interior is clear
 
   const int   TAPS   = 24;
   const float GOLDEN = 2.39996323;
@@ -226,7 +227,24 @@
     col = clamp(col, 0.0, 1.0);
 
     float a = cov + shadow * (1.0 - cov);
-    fragColor = vec4(col * cov, a) * uOpacity;   // premultiplied alpha
+
+    /*
+     * Rim-only mode.
+     *
+     * A pane you look *through* behaves like an edge, not a fill: light is bent
+     * and coloured where the surface turns away, and the middle stays clear.
+     * Filling the whole card washed the illustration out — that was the bug.
+     *
+     * Here the interior alpha fades to nothing, but the rim keeps its full
+     * coverage, so the refractive arête survives and the drawing stays readable.
+     */
+    if (rimOnly > 0.5) {
+      float rimZone = max(bz * 1.4, 14.0);
+      float interior = smoothstep(0.0, rimZone, t);   // 0 at edge, 1 inside
+      a = cov * (1.0 - interior * 0.97);              // interior ~3% see-through-fill
+    }
+
+    fragColor = vec4(col * a, a) * uOpacity;   // premultiplied alpha
   }`;
 
   const UNIFORMS = [
@@ -234,7 +252,7 @@
     'itemSize', 'glassSize', 'srcSize', 'srcOffset',
     'pad', 'radius', 'bezel', 'thickness', 'dispersion', 'blurPx', 'tintMix',
     'saturation', 'dark', 'debug', 'rim', 'grain', 'magnify', 'shadowAmt',
-    'rimTint', 'ringW', 'flatInner',
+    'rimTint', 'ringW', 'flatInner', 'rimOnly',
   ];
 
   const DEFAULTS = {
@@ -254,6 +272,7 @@
     rimTint: 0,
     ring: 0,
     flatInner: 0,
+    rimOnly: 0,
     opacity: 1,
   };
 
@@ -699,6 +718,7 @@
           gl.uniform1f(this.loc.rimTint, o.rimTint);
           gl.uniform1f(this.loc.ringW, o.ring);
           gl.uniform1f(this.loc.flatInner, o.flatInner);
+          gl.uniform1f(this.loc.rimOnly, o.rimOnly);
           gl.uniform1f(this.loc.uOpacity, o.opacity);
 
           gl.drawArrays(gl.TRIANGLES, 0, 6);

@@ -84,24 +84,37 @@
    * visibly bend, and more dispersion because the split finally has contrast to
    * act on. Tint stays low so the drawing remains readable through the glass.
    */
+  /*
+   * Rim-only, so the illustration survives.
+   *
+   * The first version filled the whole card with glass and the drawing vanished
+   * under a milky aplat — that was the complaint, and it was right: a big pane
+   * of glass over a whole illustration is not a material, it is a fog. A real
+   * pane you look *through* is mostly clear in the middle and only bends light at
+   * the arête. So rimOnly is on, the tint is near zero, and all the character is
+   * pushed into the bezel: long refraction at the edge, wide dispersion, a bright
+   * meniscus. The drawing stays legible; the border does the work.
+   */
   const SLAB = {
-    pad: 34,
+    pad: 44,
     radius: 28,
-    bezel: 30,
-    thickness: 44,
-    dispersion: 0.085,
-    blur: 1.0,
-    tint: 0.20,
-    saturation: 1.3,
-    rim: 1.0,
-    shadow: 0.85,
-    magnify: 0.05,
+    bezel: 40,
+    thickness: 64,
+    dispersion: 0.11,
+    blur: 0.8,
+    tint: 0.05,
+    saturation: 1.35,
+    rim: 1.25,
+    shadow: 0.55,
+    magnify: 0.03,
     rimTint: 1,
-    ring: -1.2,
+    ring: -1.6,
+    rimOnly: 1,
+    flatInner: 1,
   };
 
-  /* Pearl needs a touch more tint to keep the contrast on pale paper. */
-  const SLAB_PEARL = { tint: 0.10, rimTint: 0, ring: -0.9, thickness: 40 };
+  /* Pearl: same edge, no additive rim tint (it would grey out on paper). */
+  const SLAB_PEARL = { tint: 0.02, rimTint: 0, ring: -1.3, thickness: 56, rim: 1.1, rimOnly: 1 };
 
   /* ── one scene → one tile ────────────────────────────────────────────── */
   function mountScene(tile) {

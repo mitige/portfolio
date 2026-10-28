@@ -355,10 +355,12 @@ body.nav-open .nav-scrim {
  */
 .tile__glass {
   position: absolute;
-  inset: 10px;
-  border-radius: calc(var(--radius-card) - 8px);
+  inset: 4px;
+  border-radius: calc(var(--radius-card) - 3px);
   z-index: 1;
   pointer-events: none;
+  background: none;
+  box-shadow: none;
 }
 
 .tile--edge .tile__glass {
